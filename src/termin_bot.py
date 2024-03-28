@@ -10,6 +10,7 @@ import asyncpg
 from aiogram import types
 from dotenv import load_dotenv
 import os
+from sshtunnel import SSHTunnelForwarder
 
 load_dotenv()
 
@@ -38,7 +39,19 @@ class Form(StatesGroup):
 
 # Создание таблицы в базе данных
 async def create_db():
-    conn = await asyncpg.connect(user=DB_USER, password=DB_PASSWORD, database=DB_NAME, host=DB_HOST, port=DB_PORT)
+    with SSHTunnelForwarder(
+        (SSH_HOST, 22),
+        ssh_username=SSH_USERNAME,
+        ssh_pkey=SSH_KEY,
+        remote_bind_address=(DB_HOST, int(DB_PORT))
+    ) as tunnel:
+        conn = await asyncpg.connect(
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            host='localhost',  # Connect to localhost because the tunnel forwards it to the remote DB
+            port=tunnel.local_bind_port  # Use the dynamically assigned local port
+        )
     try:
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS termins (
