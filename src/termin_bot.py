@@ -8,14 +8,19 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.router import Router
 import asyncpg
 from aiogram import types
+from dotenv import load_dotenv
+import os
 
 
-API_TOKEN = '7145016431:AAG3lyKT9PwtAbdX214izq5ZJApvRpU6DLY'
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
-DB_HOST = '10.211.55.5'
-DB_PORT ='5433'
-DB_NAME = 'telegram'
+API_TOKEN = os.getenv('TELEGRAM_TOKEN')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+DB_NAME = os.getenv('DB_NAME')
+SSH_HOST = os.getenv('SSH_HOST')
+SSH_USERNAME = os.getenv('SSH_USERNAME')
+SSH_KEY = os.getenv('SSH_KEY')
 
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
